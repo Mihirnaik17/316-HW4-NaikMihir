@@ -23,6 +23,7 @@ const api = axios.create({
 // WE NEED TO PUT THINGS INTO THE DATABASE OR IF WE HAVE SOME
 // CUSTOM FILTERS FOR QUERIES
 
+//Making the first initial commit 
 export const getLoggedIn = () => api.get(`/loggedIn/`);
 export const loginUser = (email, password) => {
     return api.post(`/login/`, {
