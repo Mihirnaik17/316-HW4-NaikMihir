@@ -22,14 +22,33 @@
 // // WORK, AND SOME REQUIRE DATA, WHICH WE WE WILL FORMAT HERE, FOR WHEN
 // // WE NEED TO PUT THINGS INTO THE DATABASE OR IF WE HAVE SOME
 // // CUSTOM FILTERS FOR QUERIES
-// export const createPlaylist = (newListName, newSongs, userEmail) => {
-//     return api.post(`/playlist/`, {
-//         // SPECIFY THE PAYLOAD
-//         name: newListName,
-//         songs: newSongs,
-//         ownerEmail: userEmail
-//     })
-// }
+export const createPlaylist = async (newListName, newSongs, userEmail) => {
+    
+        // SPECIFY THE PAYLOAD
+        const payload = {
+        name: newListName,
+        songs: newSongs,
+        ownerEmail: userEmail
+        };
+
+        try{
+            const response = await fetch('${baseURL}/playlist/',{
+            method: 'POST',
+            credentials: "include",
+            headers: { 
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+            });
+
+            const data = await handleresponse(response);
+            return data;
+        } catch (error){
+            console.error(error);
+            throw error;
+        }
+    
+}
 // export const deletePlaylistById = (id) => api.delete(`/playlist/${id}`)
 // export const getPlaylistById = (id) => api.get(`/playlist/${id}`)
 // export const getPlaylistPairs = () => api.get(`/playlistpairs/`)
@@ -67,3 +86,20 @@ const handleresponse = (response) => {
 
 }
 
+// async function createPlaylist = (newListName, newSongs, userEmail) =>{
+//     const payload = {
+//         name: newListName,
+//         songs: newSongs,
+//         ownerEmail: userEmail
+//     };
+
+//     const response = await fetch('${baseURL}/playlist/', {
+//         method: 'POST',
+//         credentials: "include",
+//         header: {
+//             'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify(payload)
+//     }).then(handleresponse);
+
+// }
