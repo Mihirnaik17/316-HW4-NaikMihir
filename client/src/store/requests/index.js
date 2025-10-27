@@ -22,8 +22,24 @@
 // // WORK, AND SOME REQUIRE DATA, WHICH WE WE WILL FORMAT HERE, FOR WHEN
 // // WE NEED TO PUT THINGS INTO THE DATABASE OR IF WE HAVE SOME
 // // CUSTOM FILTERS FOR QUERIES
-export const createPlaylist = async (newListName, newSongs, userEmail) => {
-    
+
+
+const baseURL = 'http://localhost:4000/store';
+
+const handleresponse = (response) => {
+    if(!response.ok){
+        return response.json()
+        .then(error => {
+            throw new Error(`Response status: ${response.status}`);
+        }).catch(parseError =>{
+            throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
+        });
+    }
+    return response.json();
+
+}
+
+export const createPlaylist = async (newListName, newSongs, userEmail) => {   
         // SPECIFY THE PAYLOAD
         const payload = {
         name: newListName,
@@ -32,7 +48,7 @@ export const createPlaylist = async (newListName, newSongs, userEmail) => {
         };
 
         try{
-            const response = await fetch('${baseURL}/playlist/',{
+            const response = await fetch(`${baseURL}/playlist/`,{
             method: 'POST',
             credentials: "include",
             headers: { 
@@ -49,6 +65,21 @@ export const createPlaylist = async (newListName, newSongs, userEmail) => {
         }
     
 }
+
+
+export const getPlaylistById = async (id) => {
+    try{
+        const response = await fetch(`${baseURL}/playlist/${id}`,{
+            credentials: "include",
+        });
+        const data = await handleresponse(response);
+        return data;
+    } catch (error){
+        console.error(error);
+        throw error;
+    }
+}
+
 // export const deletePlaylistById = (id) => api.delete(`/playlist/${id}`)
 // export const getPlaylistById = (id) => api.get(`/playlist/${id}`)
 // export const getPlaylistPairs = () => api.get(`/playlistpairs/`)
@@ -69,37 +100,6 @@ export const createPlaylist = async (newListName, newSongs, userEmail) => {
 
 // export default apis
 
-const baseURL = 'http://localhost:4000/store';
 
 //we are gonna create create playlist with fetch
 
-const handleresponse = (response) => {
-    if(!response.ok){
-        return response.json()
-        .then(error => {
-            throw new Error(`Response status: ${response.status}`);
-        }).catch(parseError =>{
-            throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
-        });
-    }
-    return response.json();
-
-}
-
-// async function createPlaylist = (newListName, newSongs, userEmail) =>{
-//     const payload = {
-//         name: newListName,
-//         songs: newSongs,
-//         ownerEmail: userEmail
-//     };
-
-//     const response = await fetch('${baseURL}/playlist/', {
-//         method: 'POST',
-//         credentials: "include",
-//         header: {
-//             'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify(payload)
-//     }).then(handleresponse);
-
-// }
