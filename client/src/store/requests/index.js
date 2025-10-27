@@ -80,6 +80,59 @@ export const getPlaylistById = async (id) => {
     }
 }
 
+export const getPlaylistPairs = async () => {
+    try{
+        const response = await fetch(`${baseURL}/playlistparis/`,{
+            credentials: "include",
+        });
+        const data = await handleresponse(response);
+        return data;
+    } catch (error){
+        console.error(error);
+        throw error;
+    }
+}
+
+export const deletePlaylistById = async (id) => {
+    try{
+        const response = await fetch(`${baseURL}/playlist/${id}`,{
+            method: 'DELETE',
+            credentials: "include"
+        });
+        const data = await handleresponse(response);
+           return data;
+    }catch(error){
+        console.error(error);
+        throw error;
+    }
+}
+
+export const updatePlaylistById = async (id, playlist) => {
+
+    const payload = {
+        playlist: playlist
+    };
+    try{
+            const response = await fetch(`${baseURL}/playlist/${id}`,{
+            method: 'PUT',
+            credentials: "include",
+            headers: { 
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+            });
+
+            const data = await handleresponse(response);
+            return data;
+        } catch (error){
+            console.error(error);
+            throw error;
+        }
+
+}
+
+
+
 // export const deletePlaylistById = (id) => api.delete(`/playlist/${id}`)
 // export const getPlaylistById = (id) => api.get(`/playlist/${id}`)
 // export const getPlaylistPairs = () => api.get(`/playlistpairs/`)
