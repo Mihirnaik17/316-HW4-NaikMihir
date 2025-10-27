@@ -26,16 +26,22 @@
 
 const baseURL = 'http://localhost:4000/store';
 
-const handleresponse = (response) => {
+const handleresponse =  async (response) => {
     if(!response.ok){
-        return response.json()
-        .then(error => {
-            throw new Error(`Response status: ${response.status}`);
-        }).catch(parseError =>{
-            throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
-        });
+        let errormsg = `HTTP error status: ${response.status}`;
+        try{
+            const err = await response.json();
+            errormsg = err.errorMessage || JSON.stringify(err);
+        } catch(e){
+            errormsg = response.statusText;
+        } throw new Error(errormsg);
+    }   
+    const contype = response.headers.get("content-type");
+    if(contype && contype.indexOf("application/json") !== -1){
+        return await response.json();
+    } else{
+        return {success: true};
     }
-    return response.json();
 
 }
 
@@ -66,7 +72,6 @@ export const createPlaylist = async (newListName, newSongs, userEmail) => {
     
 }
 
-
 export const getPlaylistById = async (id) => {
     try{
         const response = await fetch(`${baseURL}/playlist/${id}`,{
@@ -82,7 +87,7 @@ export const getPlaylistById = async (id) => {
 
 export const getPlaylistPairs = async () => {
     try{
-        const response = await fetch(`${baseURL}/playlistparis/`,{
+        const response = await fetch(`${baseURL}/playlistpairs/`,{
             credentials: "include",
         });
         const data = await handleresponse(response);
@@ -143,15 +148,15 @@ export const updatePlaylistById = async (id, playlist) => {
 //     })
 // }
 
-// const apis = {
-//     createPlaylist,
-//     deletePlaylistById,
-//     getPlaylistById,
-//     getPlaylistPairs,
-//     updatePlaylistById
-// }
+const apis = {
+    createPlaylist,
+    deletePlaylistById,
+    getPlaylistById,
+    getPlaylistPairs,
+    updatePlaylistById
+}
 
-// export default apis
+export default apis
 
 
 //we are gonna create create playlist with fetch

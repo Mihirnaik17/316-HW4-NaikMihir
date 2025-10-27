@@ -10,11 +10,11 @@
     @author McKilla Gorilla
 */
 
-import axios from 'axios'
-axios.defaults.withCredentials = true;
-const api = axios.create({
-    baseURL: 'http://localhost:4000/auth',
-})
+// import axios from 'axios'
+// axios.defaults.withCredentials = true;
+// const api = axios.create({
+//     baseURL: 'http://localhost:4000/auth',
+// })
 
 // THESE ARE ALL THE REQUESTS WE`LL BE MAKING, ALL REQUESTS HAVE A
 // REQUEST METHOD (like get) AND PATH (like /register). SOME ALSO
@@ -24,23 +24,124 @@ const api = axios.create({
 // CUSTOM FILTERS FOR QUERIES
 
 //Making the first initial commit 
-export const getLoggedIn = () => api.get(`/loggedIn/`);
-export const loginUser = (email, password) => {
-    return api.post(`/login/`, {
+
+const baseURL = 'http://localhost:4000/auth';
+
+const handleresponse =  async (response) => {
+    if(!response.ok){
+        let errormsg = `HTTP error status: ${response.status}`;
+        try{
+            const err = await response.json();
+            errormsg = err.errorMessage || JSON.stringify(err);
+        } catch(e){
+            errormsg = response.statusText;
+        } throw new Error(errormsg);
+    }   
+    const contype = response.headers.get("content-type");
+    if(contype && contype.indexOf("application/json") !== -1){
+        return await response.json();
+    } else{
+        return {success: true};
+    }
+
+}
+
+export const getLoggedIn = async () => {
+    try{
+        const response = await fetch(`${baseURL}/loggedIn/`,{
+            credentials: "include",
+        });
+        const data = await handleresponse(response);
+        return data;
+    } catch (error){
+        console.error(error);
+        throw error;
+    }
+}
+
+export const loginUser = async (email, password) => {   
+        // SPECIFY THE PAYLOAD
+        const payload = {
         email : email,
         password : password
-    })
+        };
+        try{
+            const response = await fetch(`${baseURL}/login/`,{
+            method: 'POST',
+            credentials: "include",
+            headers: { 
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+            });
+
+            const data = await handleresponse(response);
+            return data;
+        } catch (error){
+            console.error(error);
+            throw error;
+        }
+    
 }
-export const logoutUser = () => api.get(`/logout/`)
-export const registerUser = (firstName, lastName, email, password, passwordVerify) => {
-    return api.post(`/register/`, {
+
+export const logoutUser = async () => {
+    try{
+        const response = await fetch(`${baseURL}//logout/`,{
+            credentials: "include",
+        });
+        const data = await handleresponse(response);
+        return data;
+    } catch (error){
+        console.error(error);
+        throw error;
+    }
+}
+
+export const registerUser = async (firstName, lastName, email, password, passwordVerify) => {   
+        // SPECIFY THE PAYLOAD
+        const payload = {
         firstName : firstName,
         lastName : lastName,
         email : email,
         password : password,
         passwordVerify : passwordVerify
-    })
+        };
+        try{
+            const response = await fetch(`${baseURL}/register/`,{
+            method: 'POST',
+            credentials: "include",
+            headers: { 
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+            });
+
+            const data = await handleresponse(response);
+            return data;
+        } catch (error){
+            console.error(error);
+            throw error;
+        }
+    
 }
+
+// export const getLoggedIn = () => api.get(`/loggedIn/`);
+// export const loginUser = (email, password) => {
+//     return api.post(`/login/`, {
+//         email : email,
+//         password : password
+//     })
+// }
+// export const logoutUser = () => api.get(`/logout/`)
+// export const registerUser = (firstName, lastName, email, password, passwordVerify) => {
+//     return api.post(`/register/`, {
+//         firstName : firstName,
+//         lastName : lastName,
+//         email : email,
+//         password : password,
+//         passwordVerify : passwordVerify
+//     })
+// }
 const apis = {
     getLoggedIn,
     registerUser,
