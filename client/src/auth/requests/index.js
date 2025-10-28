@@ -30,16 +30,25 @@ const baseURL = 'http://localhost:4000/auth';
 const handleresponse =  async (response) => {
     if(!response.ok){
         let errormsg = `HTTP error status: ${response.status}`;
+        let err
         try{
-            const err = await response.json();
+            err = await response.json();
             errormsg = err.errorMessage || JSON.stringify(err);
         } catch(e){
+            err = {errorMessage: response.statusText};
             errormsg = response.statusText;
-        } throw new Error(errormsg);
+        } throw {
+            response:{
+                data: err,
+                status: response.status
+            },
+            message: errormsg
+        };
     }   
     const contype = response.headers.get("content-type");
     if(contype && contype.indexOf("application/json") !== -1){
-        return await response.json();
+        const jsonData = await response.json();
+        return {data: jsonData, status: response.status};
     } else{
         return {success: true};
     }
@@ -86,7 +95,7 @@ export const loginUser = async (email, password) => {
 
 export const logoutUser = async () => {
     try{
-        const response = await fetch(`${baseURL}//logout/`,{
+        const response = await fetch(`${baseURL}/logout/`,{
             credentials: "include",
         });
         const data = await handleresponse(response);
