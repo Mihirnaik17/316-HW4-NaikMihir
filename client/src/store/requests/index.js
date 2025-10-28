@@ -44,12 +44,11 @@ const handleresponse =  async (response) => {
             message: errormsg
         };
     }   
-    const contype = response.headers.get("content-type");
-    if(contype && contype.indexOf("application/json") !== -1){
+    try{
         const jsonData = await response.json();
         return {data: jsonData, status: response.status};
-    } else{
-        return {success: true};
+    } catch(e){
+        return { data: "", status: response.status };
     }
 
 }
