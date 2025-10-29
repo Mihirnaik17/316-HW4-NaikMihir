@@ -19,6 +19,17 @@
                 "68f526c4ec1ea2ad00a6fae8"
             ]
         }
+        ,
+        {
+            "firstName": "Mihir",
+            "lastName": "Naik",
+            "email": "mihir170204naik@gmail.com",
+            "passwordHash": "$2a$10$KnyjvHMCueSr/r33qTKxWu2FgRCi3f42zzi8dpzazq6piOmOn4N/K",
+            "playlists": [
+                "69026d8afee7f808a89274b5",
+                "69026dfdfee7f808a8927515"
+            ]
+        }
     ],
     "playlists": [
         {
@@ -206,6 +217,44 @@
                     "title": "Rudie Can't Fail",
                     "artist": "The Clash",
                     "year": 1979,
+                    "youTubeId": "uEK9oK02D1M"
+                }
+            ]
+        },
+        {
+            "_id": "69026d8afee7f808a89274b5",
+            "ownerEmail": "mihir170204naik@gmail.com",
+            "name": "Zayn's Playlist",
+            "songs": [
+                {
+                    "title": "Dusk till dawn",
+                    "artist": "Zayn",
+                    "year": 2018,
+                    "youTubeId": "cntvEDbagAw"
+                },
+                {
+                    "title": "Pillow Talk",
+                    "artist": "Zayn",
+                    "year": 2017,
+                    "youTubeId": "uEK9oK02D1M"
+                }
+            ]
+        },
+        {
+            "_id": "69026dfdfee7f808a8927515",
+            "ownerEmail": "mihir170204naik@gmail.com",
+            "name": "SIA's Playlist",
+            "songs": [
+                {
+                    "title": "Cheap Thrills",
+                    "artist": "SIA",
+                    "year": 2012,
+                    "youTubeId": "cntvEDbagAw"
+                },
+                {
+                    "title": "Elastic Heart",
+                    "artist": "SIA",
+                    "year": 2014,
                     "youTubeId": "uEK9oK02D1M"
                 }
             ]
