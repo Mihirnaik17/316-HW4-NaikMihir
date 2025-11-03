@@ -70,10 +70,10 @@ Playlist.belongsTo(User, {
 });
 
 
-async function filltable(model, tableName, data){
+async function fillTable(model, tableName, data){
     try{
         await model.bulkCreate(data,{
-            validate: TextTrackCue
+            validate: true
         });
         console.log(tableName+" filled");
     }
@@ -82,7 +82,7 @@ async function filltable(model, tableName, data){
     }
 }
 
-async function resetpostgres(){
+async function resetPostgres(){
 
     const testData = require("../example-db-data.json");
     console.log("Resetting the Postgres DB");
@@ -116,3 +116,16 @@ async function resetpostgres(){
     console.log("Postgres DB reset complete!");
 }
 
+sequelize.authenticate()
+    .then(() => {
+        console.log('Connected to PostgreSQL');
+        return resetPostgres();
+    })
+    .then(() => {
+        console.log('Reset complete');
+        process.exit(0);  
+    })
+    .catch(err => {
+        console.error('Error:', err);
+        process.exit(1);  
+    });

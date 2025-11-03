@@ -23,6 +23,15 @@
       ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
-    }
+    },
+    {
+  "type": "node",
+  "request": "launch",
+  "name": "Reset Postgre Data",
+  "skipFiles": ["<node_internals>/**"],
+  "program": "${workspaceFolder}/server/test/data/postgre/index.js",
+  "console": "integratedTerminal",
+  "internalConsoleOptions": "neverOpen"
+}
   ]
 }
