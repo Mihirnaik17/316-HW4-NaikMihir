@@ -58,3 +58,61 @@ const Playlist = sequelize.define('Playlist', {
     tableName: 'Playlists',
     timestamps: true
 });
+
+User.hasMany(Playlist, {
+    foreignKey: 'ownerId',
+    onDelete: 'CASCADE'
+});
+
+Playlist.belongsTo(User, {
+    foreignKey: 'ownerId',
+    as:'owner'
+});
+
+
+async function filltable(model, tableName, data){
+    try{
+        await model.bulkCreate(data,{
+            validate: TextTrackCue
+        });
+        console.log(tableName+" filled");
+    }
+    catch(err){
+        console.log(err);
+    }
+}
+
+async function resetpostgres(){
+
+    const testData = require("../example-db-data.json");
+    console.log("Resetting the Postgres DB");
+
+    await sequelize.sync({force:true});
+    console.log(
+        "tables created"
+    );
+    const usersData = testData.users.map(user => ({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        passwordHash: user.passwordHash
+    }));
+    await fillTable(User, "User", usersData);
+    const createdUsers = await User.findAll();
+    const emailToIdMap = {};
+    createdUsers.forEach(user => {
+        emailToIdMap[user.email] = user.id;
+    });
+
+    const playlistsData = testData.playlists.map(playlist => {
+        return {
+            name: playlist.name,
+            ownerEmail: playlist.ownerEmail,
+            songs: playlist.songs,
+            ownerId: emailToIdMap[playlist.ownerEmail]  
+        };
+    });
+    await fillTable(Playlist, "Playlist", playlistsData);
+    console.log("Postgres DB reset complete!");
+}
+
