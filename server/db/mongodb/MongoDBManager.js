@@ -13,8 +13,8 @@ class MongoDBManager extends DatabaseManager{
     }
 
 
-    async getUserById(UserId){
-        return await User.findOne({ _id: UserId });
+    async getUserById(userId){
+        return await User.findOne({ _id: userId });
     }
     
     async getUserByEmail(email) {
