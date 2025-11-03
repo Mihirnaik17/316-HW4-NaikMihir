@@ -33,6 +33,22 @@ class DatabaseManager {
     async deletePlaylist(playlistId) {
         throw new Error('deletePlaylist() must be implemented by subclass');
     }
+    async clearAllUsers() {
+        throw new Error('clearAllUsers() must be implemented by subclass');
+    }
+    async clearAllPlaylists() {
+        throw new Error('clearAllPlaylists() must be implemented by subclass');
+    }
+    async getAllUsers() {
+        throw new Error('getAllUsers() must be implemented by subclass');
+    }
+    async deleteUser(userId) {
+        throw new Error('deleteUser() must be implemented by subclass');
+    }
+    async resetDatabase(testData) {
+        throw new Error('resetDatabase() must be implemented by subclass');
+    }
+
 }
 
 module.exports = DatabaseManager;

@@ -1,5 +1,7 @@
+const dotenv = require('dotenv').config({ path: __dirname + '/../../../.env' });
 const DatabaseManager = require('../DatabaseManager');
 const mongoose = require('mongoose');
+const testData = require("../example-db-data.json");
 const User = require('../../models/user-model');
 const Playlist = require('../../models/playlist-model');
 
@@ -69,7 +71,25 @@ class MongoDBManager extends DatabaseManager{
 
     async deletePlaylist(playlistId) {
         return await Playlist.findOneAndDelete({ _id: playlistId });
-    }    
+    }   
+    
+
+    // async function clearAllData(){
+    //     try{
+    //         const playlists = await DatabaseManager.getAllPlaylists();
+    //         for(let curPlayList of playlists){
+    //             await DatabaseManager.deletePlaylist(curPlayList._id);
+    //         }
+    //         console.log("Playlists cleared");
+    //     }
+    //     catch(err){
+    //         console.log(err);
+    //     }
+    // }
+    
+    //reset mongo data methods
+
+
 }
 
 module.exports = MongoDBManager;

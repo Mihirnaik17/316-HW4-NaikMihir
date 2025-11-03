@@ -1,4 +1,13 @@
 const dotenv = require('dotenv').config({ path: __dirname + '/../../../.env' });
+const dbManager = require('../../../db'); // Import your database manager
+const testData = require("../example-db-data.json");
+const bcrypt = require('bcryptjs');
+
+
+
+//We are trying to keep all the mongo related code in one file so I am going to implement this
+// code in the mongodbManager file and just call them here.
+
 
 async function clearCollection(collection, collectionName) {
     try {
