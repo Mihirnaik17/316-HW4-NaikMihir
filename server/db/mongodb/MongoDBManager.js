@@ -13,7 +13,7 @@ class MongoDBManager extends DatabaseManager{
 
 
     async getUserById(UserId){
-        return await User.findOne({ _id: userId });
+        return await User.findOne({ _id: UserId });
     }
     
     async getUserByEmail(email) {
@@ -24,5 +24,53 @@ class MongoDBManager extends DatabaseManager{
         const newUser = new User(userData);
         return await newUser.save();
     }
+
+    async addPlaylistToUser (userId, playlistId ){
+        const user = await User.findOne({_id: userId});
+        if(!user){
+            throw new Error('User not found');
+        }
+
+        user.playlists.push(playlistId);
+        return await user.save();
+    }
+
+    async createPlaylist(playlistData){
+        const new_playlist = new Playlist(playlistData);
+        return await new_playlist.save();
+    }
+
+    async getPlaylistById(playlistId){
+        return await Playlist.findById({_id: playlistId})
+    }
+
+    async getPlaylistsByOwnerEmail(email) {
+        return await Playlist.find({ ownerEmail: email });
+    }
     
+    async getAllPlaylists() {
+        return await Playlist.find({});
+    }
+    async updatePlaylist(playlistId, updateData) {
+        const playlist = await Playlist.findOne({ _id: playlistId });
+        if (!playlist) {
+            throw new Error('Playlist not found');
+        }
+        
+        if (updateData.name !== undefined) {
+            playlist.name = updateData.name;
+        }
+        if (updateData.songs !== undefined) {
+            playlist.songs = updateData.songs;
+        }
+        
+        return await playlist.save();
+    }
+
+    async deletePlaylist(playlistId) {
+        return await Playlist.findOneAndDelete({ _id: playlistId });
+    }    
 }
+
+module.exports = MongoDBManager;
+

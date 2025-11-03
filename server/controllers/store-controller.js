@@ -1,6 +1,7 @@
-const Playlist = require('../models/playlist-model')
-const User = require('../models/user-model');
-const auth = require('../auth')
+const DatabaseManager = require('../DatabaseManager');
+const mongoose = require('mongoose');
+const User = require('../../models/user-model');
+const Playlist = require('../../models/playlist-model');
 /*
     This is our back-end API. It provides all the data services
     our database needs. Note that this file contains the controller
