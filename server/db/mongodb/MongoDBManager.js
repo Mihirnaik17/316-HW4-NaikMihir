@@ -1,7 +1,6 @@
 const dotenv = require('dotenv').config({ path: __dirname + '/../../../.env' });
 const DatabaseManager = require('../DatabaseManager');
 const mongoose = require('mongoose');
-const testData = require("../example-db-data.json");
 const User = require('../../models/user-model');
 const Playlist = require('../../models/playlist-model');
 
@@ -9,7 +8,7 @@ const Playlist = require('../../models/playlist-model');
 class MongoDBManager extends DatabaseManager{
 
     async initialize(){
-        await mongoose.connect(process.env.DB_CONNECT, {useNewParser: true});
+        await mongoose.connect(process.env.DB_CONNECT, {useNewUrlParser: true, useUnifiedTopology: true});
         console.log('Connected to MongoDB');
     }
 
@@ -73,8 +72,7 @@ class MongoDBManager extends DatabaseManager{
         return await Playlist.findOneAndDelete({ _id: playlistId });
     }   
     
-
-    // async function clearAllData(){
+    // async clearAllPlaylists(){
     //     try{
     //         const playlists = await DatabaseManager.getAllPlaylists();
     //         for(let curPlayList of playlists){
@@ -86,6 +84,64 @@ class MongoDBManager extends DatabaseManager{
     //         console.log(err);
     //     }
     // }
+
+    // async clearAllUsers(){
+    //     try{
+    //         const Users = await DatabaseManager.getAllUsers();
+    //         for(let curUser of Users){
+    //             await DatabaseManager.deletePlaylist(curUser._id);
+    //         }
+    //         console.log("users cleared");
+    //     }
+    //     catch(err){
+    //         console.log(err);
+    //     }
+    // }
+
+    async clearAllPlaylists(){
+    await Playlist.deleteMany({});
+    console.log("Playlists cleared");
+}
+
+async clearAllUsers(){
+    await User.deleteMany({});
+    console.log("Users cleared");
+}
+
+    async getAllUsers(){
+        return await User.find({});
+    }
+
+    async deleteUser(userId) {
+        return await User.findOneAndDelete({ _id: userId });
+    }
+
+    async resetDatabase(testData){
+        try{
+            console.log("resetting the DB");
+            await this.clearAllPlaylists();
+            await this.clearAllUsers();
+
+            for(let userData of testData.users){
+                await this.createUser(userData);
+            }
+            console.log("users filled");
+
+            for (let playlistData of testData.playlists) {
+                const playlist = await this.createPlaylist(playlistData);
+                const user = await this.getUserByEmail(playlistData.ownerEmail);
+                if (user) {
+                    await this.addPlaylistToUser(user._id, playlist._id);
+                }
+            }
+            console.log("Playlists filled");
+            console.log("Database reset complete!");
+
+        } catch (err) {
+            console.error("Error resetting database:", err);
+            throw err;
+        }
+    }
     
     //reset mongo data methods
 

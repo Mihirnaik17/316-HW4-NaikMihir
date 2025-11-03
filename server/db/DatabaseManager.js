@@ -33,6 +33,7 @@ class DatabaseManager {
     async deletePlaylist(playlistId) {
         throw new Error('deletePlaylist() must be implemented by subclass');
     }
+    //reset data funtions
     async clearAllUsers() {
         throw new Error('clearAllUsers() must be implemented by subclass');
     }
