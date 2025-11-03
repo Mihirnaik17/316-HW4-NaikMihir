@@ -1,15 +1,19 @@
-
-const mongoose = require('mongoose')
-const dotenv = require('dotenv')
+const dotenv = require('dotenv');
 dotenv.config();
 
-mongoose
-    .connect(process.env.DB_CONNECT, { useNewUrlParser: true })
-    .catch(e => {
-        console.error('Connection error', e.message)
-    })
+const dbType = process.env.DATABASE_TYPE || 'mongodb';
 
-const db = mongoose.connection
+let dbManager;
 
-module.exports = db
+if (dbType === 'mongodb') {
+    const MongoDBManager = require('./mongodb/MongoDBManager');
+    dbManager = new MongoDBManager();
+} else if (dbType === 'postgresql') {
+    const PostgreSQLManager = require('./postgresql/PostgreSQLManager');
+    dbManager = new PostgreSQLManager();
+} else {
+    throw new Error(`Unknown DATABASE_TYPE: ${dbType}. Must be 'mongodb' or 'postgresql'`);
+}
 
+
+module.exports = dbManager;
