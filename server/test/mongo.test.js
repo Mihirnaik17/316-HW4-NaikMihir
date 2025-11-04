@@ -1,6 +1,8 @@
 import { beforeAll, beforeEach, afterEach, afterAll, expect, test } from 'vitest';
 const dotenv = require('dotenv').config({ path: __dirname + '/.env' });
-const mongoose = require('mongoose')
+//const mongoose = require('mongoose')
+const dbManager = require('../db'); 
+const testData = require('./data/example-db-data.json');
 
 /**
  * Vitest test script for the Playlister app's Mongo Database Manager. Testing should verify that the Mongo Database Manager 
@@ -21,17 +23,21 @@ const mongoose = require('mongoose')
 beforeAll(async () => {
     // SETUP THE CONNECTION VIA MONGOOSE JUST ONCE - IT IS IMPORTANT TO NOTE THAT INSTEAD
     // OF DOING THIS HERE, IT SHOULD BE DONE INSIDE YOUR Database Manager (WHICHEVER)
-    await mongoose
-        .connect(process.env.DB_CONNECT, { useNewUrlParser: true })
-        .catch(e => {
-            console.error('Connection error', e.message)
-        })
+    // await mongoose
+    //     .connect(process.env.DB_CONNECT, { useNewUrlParser: true })
+    //     .catch(e => {
+    //         console.error('Connection error', e.message)
+    //     })
+
+    await dbManager.initialize();
+    console.log('Database connected for testing');
 });
 
 /**
  * Executed before each test is performed.
  */
-beforeEach(() => {
+beforeEach(async () => {
+     await dbManager.resetDatabase(testData);
 });
 
 /**
@@ -100,3 +106,63 @@ test('Test #2) Creating a User in the Database', () => {
 });
 
 // THE REST OF YOUR TEST SHOULD BE PUT BELOW
+
+
+test('getUserById returns a user', async () => {
+
+    const user = await dbManager.getUserByEmail('joe@shmo.com');
+    const userId = user.id || user._id;
+    const foundUser = await dbManager.getUserById(userId);
+    
+    expect(foundUser).toBeDefined();
+    expect(foundUser.email).toBe('joe@shmo.com');
+    expect(foundUser.firstName).toBe('Joe');
+    expect(foundUser.lastName).toBe('Shmo');
+});
+
+test('getUserByEmail returns a user', async () => {
+    const user = await dbManager.getUserByEmail('jane@doe.com');
+    
+    expect(user).toBeDefined();
+    expect(user.firstName).toBe('Jane');
+    expect(user.lastName).toBe('Doe');
+    expect(user.email).toBe('jane@doe.com');
+});
+
+test('createUser creates a new user', async () => {
+    const newUser = {
+        firstName: 'Mihir',
+        lastName: 'Naik',
+        email: 'myemail.com',
+        passwordHash: 'hashedpassword123'
+    };
+    
+    const created = await dbManager.createUser(newUser);
+    
+    expect(created).toBeDefined();
+    expect(created.email).toBe('myemail.com');
+    expect(created.firstName).toBe('Mihir');
+    expect(created.lastName).toBe('Naik');
+    
+    const retrieved = await dbManager.getUserByEmail('myemail.com');
+    expect(retrieved).toBeDefined();
+    expect(retrieved.email).toBe('myemail.com');
+});
+
+test('getPlaylistsByOwnerEmail returns user playlists', async () => {
+    const playlists = await dbManager.getPlaylistsByOwnerEmail('joe@shmo.com');
+    
+    expect(playlists).toBeDefined();
+    expect(playlists.length).toBeGreaterThan(0);
+    playlists.forEach(playlist => {
+        expect(playlist.ownerEmail).toBe('joe@shmo.com');
+    });
+});
+
+test('getAllPlaylists returns all playlists', async () => {
+    const playlists = await dbManager.getAllPlaylists();
+    
+    expect(playlists).toBeDefined();
+    expect(playlists.length).toBeGreaterThan(0);
+    expect(playlists.length).toBeGreaterThanOrEqual(5);
+});
