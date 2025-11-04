@@ -99,14 +99,14 @@ class MongoDBManager extends DatabaseManager{
     // }
 
     async clearAllPlaylists(){
-    await Playlist.deleteMany({});
-    console.log("Playlists cleared");
-}
+        await Playlist.deleteMany({});
+        console.log("Playlists cleared");
+    }
 
-async clearAllUsers(){
-    await User.deleteMany({});
-    console.log("Users cleared");
-}
+    async clearAllUsers(){
+        await User.deleteMany({});
+        console.log("Users cleared");
+    }
 
     async getAllUsers(){
         return await User.find({});

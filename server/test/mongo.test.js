@@ -143,7 +143,7 @@ test('createUser creates a new user', async () => {
     expect(created.email).toBe('myemail.com');
     expect(created.firstName).toBe('Mihir');
     expect(created.lastName).toBe('Naik');
-    
+
     const retrieved = await dbManager.getUserByEmail('myemail.com');
     expect(retrieved).toBeDefined();
     expect(retrieved.email).toBe('myemail.com');
@@ -165,4 +165,58 @@ test('getAllPlaylists returns all playlists', async () => {
     expect(playlists).toBeDefined();
     expect(playlists.length).toBeGreaterThan(0);
     expect(playlists.length).toBeGreaterThanOrEqual(5);
+});
+
+test('getPlaylistById returns a playlist', async () => {
+    const playlists = await dbManager.getAllPlaylists();
+    expect(playlists.length).toBeGreaterThan(0);
+    
+    const firstPlaylist = playlists[0];
+    const playlistId = firstPlaylist.id || firstPlaylist._id;
+    const retrieved = await dbManager.getPlaylistById(playlistId);
+    
+    expect(retrieved).toBeDefined();
+    expect(retrieved.name).toBe(firstPlaylist.name);
+    expect(retrieved.ownerEmail).toBe(firstPlaylist.ownerEmail);
+});
+
+test('updatePlaylist updates playlist data', async () => {
+    const playlists = await dbManager.getPlaylistsByOwnerEmail('joe@shmo.com');
+    const playlist = playlists[0];
+    const playlistId = playlist.id || playlist._id;
+    const updateData = {
+        name: 'Updated Playlist Name',
+        songs: [
+            {
+                title: 'New Song',
+                artist: 'New Artist',
+                year: 2025,
+                youTubeId: 'new123'
+            }
+        ]
+    };
+    
+    await dbManager.updatePlaylist(playlistId, updateData);
+
+    const updated = await dbManager.getPlaylistById(playlistId);
+    expect(updated.name).toBe('Updated Playlist Name');
+    expect(updated.songs.length).toBe(1);
+    expect(updated.songs[0].title).toBe('New Song');
+});
+
+test('deletePlaylist removes a playlist', async () => {
+    const newPlaylist = {
+        name: 'Playlist to Delete',
+        ownerEmail: 'jane@doe.com',
+        songs: []
+    };
+    const created = await dbManager.createPlaylist(newPlaylist);
+    const playlistId = created.id || created._id;
+
+    let retrieved = await dbManager.getPlaylistById(playlistId);
+    expect(retrieved).toBeDefined();
+
+    await dbManager.deletePlaylist(playlistId);
+    retrieved = await dbManager.getPlaylistById(playlistId);
+    expect(retrieved).toBeNull();
 });
