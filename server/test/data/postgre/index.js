@@ -1,6 +1,8 @@
+const dotenv = require('dotenv').config({ path: __dirname + '/../../../.env' });
+
 const dbManager = require('../../../db');
 const testData = require("../example-db-data.json");
-const dotenv = require('dotenv').config({ path: __dirname + '/../../../.env' });
+//const dotenv = require('dotenv').config({ path: __dirname + '/../../../.env' });
 
 // const { Sequelize, DataTypes } = require('sequelize');
 
