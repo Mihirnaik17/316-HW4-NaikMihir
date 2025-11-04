@@ -30,9 +30,9 @@ createPlaylist = async (req, res) => {
     
     const playlist = await dbManager.createPlaylist(body);
     console.log("playlist created: " + JSON.stringify(playlist));
-    if (!playlist) {
-        return res.status(400).json({ success: false, error: err })
-    }
+    // if (!playlist) {
+    //     return res.status(400).json({ success: false, error: err })
+    // }
 
     // User.findOne({ _id: req.userId }, (err, user) => {
     //     console.log("user found: " + JSON.stringify(user));
